@@ -4,7 +4,6 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 def rotation(rotx, roty, rotz):
-    rotx, roty, rotz = np.radians(rotx), np.radians(roty), np.radians(rotz)
     rotx_mat = np.array([[1, 0, 0], [0, np.cos(rotx), -np.sin(rotx)], [0, np.sin(rotx), np.cos(rotx)]])
     roty_mat = np.array([[np.cos(roty), 0, np.sin(roty)], [0, 1, 0], [-np.sin(roty), 0, np.cos(roty)]])
     rotz_mat = np.array([[np.cos(rotz), -np.sin(rotz), 0], [np.sin(rotz), np.cos(rotz), 0], [0, 0, 1]])
@@ -29,9 +28,13 @@ def compound(rotmatrix, transvector):
 lground = 4.1  # cm
 l0z = 2.5  # cm
 l0x = -1  # cm
+q0 = np.radians(45)
 l1 = 9.525   # cm (3.75”)
+q1 = np.radians(-45)
 l2 = 10.795  # cm (4.25”)
+q2 = np.radians(90)
 l3 = 8.5725  # cm (3.375”)
+q3 = np.radians(35)
 
 
 # Create RGB axis data
@@ -39,10 +42,10 @@ length = 5
 axis_system = np.array([[length,0,0], [0,length,0],[0,0,length]])
 origin = np.array([0,0,0,0,0,0])
 joint0 = np.array([0,0,lground,0,0,0])
-joint1 = np.array([l0x,0,l0z,0,0,45])
-joint2 = np.array([0,0,l1,0,-45,0])
-joint3 = np.array([0,0,l2,0,90,0])
-EE = np.array([0,0,l3,0,35,0])
+joint1 = np.array([l0x,0,l0z,0,0,q0])
+joint2 = np.array([0,0,l1,0,q1,0])
+joint3 = np.array([0,0,l2,0,q2,0])
+EE = np.array([0,0,l3,0,q3,0])
 names = ['ground', 'joint0', 'joint1', 'joint2', 'joint3', 'EE']
 
 
@@ -78,12 +81,18 @@ ax.set_zlim(0, 2*box_size)
         
 # ax.set_box_aspect([1,1,1])
 
+z = lground + l0z + l1*np.cos(q1) + l2*np.cos(q1 + q2) + l3*np.cos(q1 + q2 + q3)
+y = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.sin(q0)
+x = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.cos(q0)
+print(x, y, z)
+
 # Set plot title
 plt.title('4DOF System')
 
 # Show plot
 # plt.savefig('3d.eps', format='eps', dpi=1000)
 plt.show()
+
 
 
 
