@@ -2,13 +2,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
+
 def rotation(rotx, roty, rotz):
     rotx, roty, rotz = np.radians(rotx), np.radians(roty), np.radians(rotz)
-    rotx = np.array([[1, 0, 0], [0, np.cos(rotx), -np.sin(rotx)], [0, np.sin(rotx), np.cos(rotx)]])
-    roty = np.array([[np.cos(roty), 0, np.sin(roty)], [0, 1, 0], [-np.sin(roty), 0, np.cos(roty)]])
-    rotz = np.array([[np.cos(rotz), -np.sin(rotz), 0], [np.sin(rotz), np.cos(rotz), 0], [0, 0, 1]])
-    rot = np.dot(np.dot(rotx, roty), rotz)
+    rotx_mat = np.array([[1, 0, 0], [0, np.cos(rotx), -np.sin(rotx)], [0, np.sin(rotx), np.cos(rotx)]])
+    roty_mat = np.array([[np.cos(roty), 0, np.sin(roty)], [0, 1, 0], [-np.sin(roty), 0, np.cos(roty)]])
+    rotz_mat = np.array([[np.cos(rotz), -np.sin(rotz), 0], [np.sin(rotz), np.cos(rotz), 0], [0, 0, 1]])
+    rot = rotx_mat @ roty_mat @ rotz_mat
     return rot  
+
 
 def translation(x, y, z):
     return np.array([[x],[y],[z]])
@@ -17,17 +19,18 @@ def translation(x, y, z):
 #     total =  np.vstack([np.hstack([rotation(rotx, roty, rotz), translation(x, y, z)]), np.array([0, 0, 0, 1])])
 #     return total
 
+
 def compound(rotmatrix, transvector):
     total = np.vstack([np.hstack([rotmatrix, transvector]), np.array([0, 0, 0, 1])])
     return total
 
+
 # Define parameters
-l0 = 2  # cm
-l1 = 1  # cm
+l0 = 4.1  # cm
+l1 = 2.5  # cm
 l2 = 9.525   # cm (3.75”)
 l3 = 10.795  # cm (4.25”)
-l3 = 8.5725  # cm (3.375”)
-l4 = 6  # cm
+l4 = 8.5725  # cm (3.375”)
 
 
 # Create RGB axis data
@@ -45,7 +48,7 @@ names = ['origin', 'joint0', 'joint1', 'joint2', 'joint3', 'EE']
 # Create figure and 3D axis
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-colors=['r', 'g', 'b']
+colors = ['r', 'g', 'b']
 latest_pos = np.array([[0],[0],[0]])
 latest_rot = np.array([[1,0,0],[0,1,0],[0,0,1]])
 namecount = 0
