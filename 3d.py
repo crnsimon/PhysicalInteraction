@@ -27,7 +27,7 @@ def compound(rotmatrix, transvector):
 # Define parameters
 lground = 4.1  # cm
 l0z = 2.5  # cm
-l0x = -1  # cm
+l0x = 1  # cm
 q0 = np.radians(45)
 l1 = 9.525   # cm (3.75”)
 q1 = np.radians(-45)
