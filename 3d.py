@@ -28,7 +28,7 @@ def compound(rotmatrix, transvector):
 lground = 4.1  # cm
 l0z = 2.5  # cm
 l0x = 1  # cm
-q0 = np.radians(45)
+r0 = np.radians(0)
 l1 = 9.525   # cm (3.75”)
 q1 = np.radians(-45)
 l2 = 10.795  # cm (4.25”)
@@ -42,7 +42,7 @@ length = 5
 axis_system = np.array([[length,0,0], [0,length,0],[0,0,length]])
 origin = np.array([0,0,0,0,0,0])
 joint0 = np.array([0,0,lground,0,0,0])
-joint1 = np.array([l0x,0,l0z,0,0,q0])
+joint1 = np.array([l0x,0,l0z,0,0,r0])
 joint2 = np.array([0,0,l1,0,q1,0])
 joint3 = np.array([0,0,l2,0,q2,0])
 EE = np.array([0,0,l3,0,q3,0])
@@ -81,17 +81,84 @@ ax.set_zlim(0, 2*box_size)
         
 # ax.set_box_aspect([1,1,1])
 
-z = lground + l0z + l1*np.cos(q1) + l2*np.cos(q1 + q2) + l3*np.cos(q1 + q2 + q3)
-y = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.sin(q0)
-x = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.cos(q0)
-print(x, y, z)
-
 # Set plot title
 plt.title('4DOF System')
 
 # Show plot
 # plt.savefig('3d.eps', format='eps', dpi=1000)
 plt.show()
+
+
+# Forward kinematics
+
+z = lground + l0z + l1*np.cos(q1) + l2*np.cos(q1 + q2) + l3*np.cos(q1 + q2 + q3)
+y = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.sin(r0)
+x = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.cos(r0)
+
+# # reachable subspace, no limits
+
+# fig = plt.figure()
+# ax = fig.add_subplot(111, projection='3d')
+
+# for i in range(0, 360, 10):
+#     r0 = np.radians(i)
+#     for j in range(0, 360, 10):
+#         q1 = np.radians(j)
+#         for k in range(0, 360, 10):
+#             q2 = np.radians(k)
+#             for l in range(0, 360, 10):
+#                 q3 = np.radians(l)
+#                 z = lground + l0z + l1*np.cos(q1) + l2*np.cos(q1 + q2) + l3*np.cos(q1 + q2 + q3)
+#                 y = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.sin(r0)
+#                 x = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.cos(r0)
+#                 ax.scatter(x, y, z, c='b', marker='o')
+# plt.show()
+
+# reachable subspace, limits
+
+
+reachable_x = []
+reachable_y = []
+reachable_z = []
+
+r0 = 0
+for j in np.linspace(-60, 60, 100):
+    q1 = np.radians(j)
+    for k in np.linspace(0, 70, 100):
+        q2 = np.radians(k)
+        for l in np.linspace(-90, 90, 100):
+            q3 = np.radians(l)
+            z = lground + l0z + l1*np.cos(q1) + l2*np.cos(q1 + q2) + l3*np.cos(q1 + q2 + q3)
+            y = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.sin(r0)
+            x = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.cos(r0)
+            reachable_x.append(x)
+            reachable_y.append(y)
+            reachable_z.append(z)
+
+# plt.figure()
+# plt.plot(reachable_x, reachable_y, 'b.')
+# plt.axis('equal')
+# plt.xlabel('x')
+# plt.ylabel('y')
+# plt.title('Reachable subspace x-y')
+# plt.savefig('reachable_xy.eps', format='eps', dpi=1000)
+# plt.show()
+plt.figure()
+plt.plot(reachable_x, reachable_z, 'b.')
+plt.axis('equal')
+plt.xlabel('x')
+plt.ylabel('z')
+plt.title('Reachable subspace x-z')
+plt.savefig('reachable_xz.eps', format='eps', dpi=1000)
+plt.show()
+# plt.figure()
+# plt.plot(reachable_y, reachable_z, 'b.')
+# plt.axis('equal')
+# plt.xlabel('y')
+# plt.ylabel('z')
+# plt.title('Reachable subspace y-z')
+# plt.savefig('reachable_yz.eps', format='eps', dpi=1000)
+# plt.show()
 
 
 
