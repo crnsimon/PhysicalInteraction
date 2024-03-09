@@ -64,7 +64,7 @@ for pos in origin, joint0, joint1, joint2, joint3, EE:
     ax.text(new_pos[0][0], new_pos[1][0], new_pos[2][0], names[namecount])
     namecount += 1
     for axis in axis_system:
-        new_axis = np.dot(compound_matrix,np.vstack([*axis, np.array([1])]))[:-1]
+        new_axis = (compound_matrix @ np.vstack([*axis, np.array([1])]))[:-1]
         ax.quiver(*new_pos,*(new_axis-new_pos), color=colors[axis_system.tolist().index(axis.tolist())])
     latest_pos = new_pos
     
