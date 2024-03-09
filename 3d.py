@@ -26,23 +26,24 @@ def compound(rotmatrix, transvector):
 
 
 # Define parameters
-l0 = 4.1  # cm
-l1 = 2.5  # cm
-l2 = 9.525   # cm (3.75”)
-l3 = 10.795  # cm (4.25”)
-l4 = 8.5725  # cm (3.375”)
+lground = 4.1  # cm
+l0z = 2.5  # cm
+l0x = -1  # cm
+l1 = 9.525   # cm (3.75”)
+l2 = 10.795  # cm (4.25”)
+l3 = 8.5725  # cm (3.375”)
 
 
 # Create RGB axis data
 length = 5
 axis_system = np.array([[length,0,0], [0,length,0],[0,0,length]])
 origin = np.array([0,0,0,0,0,0])
-joint0 = np.array([0,0,l0,0,0,0])
-joint1 = np.array([0,0,l1,0,0,45])
-joint2 = np.array([0,0,l2,-45,0,0])
-joint3 = np.array([0,0,l3,90,0,0])
-EE = np.array([0,0,l4,35,0,0])
-names = ['origin', 'joint0', 'joint1', 'joint2', 'joint3', 'EE']
+joint0 = np.array([0,0,lground,0,0,0])
+joint1 = np.array([l0x,0,l0z,0,0,45])
+joint2 = np.array([0,0,l1,0,-45,0])
+joint3 = np.array([0,0,l2,0,90,0])
+EE = np.array([0,0,l3,0,35,0])
+names = ['ground', 'joint0', 'joint1', 'joint2', 'joint3', 'EE']
 
 
 # Create figure and 3D axis
@@ -78,9 +79,12 @@ ax.set_zlim(0, 2*box_size)
 # ax.set_box_aspect([1,1,1])
 
 # Set plot title
-plt.title('RGB Axis System')
+plt.title('4DOF System')
 
 # Show plot
+# plt.savefig('3d.eps', format='eps', dpi=1000)
 plt.show()
+
+
 
 
