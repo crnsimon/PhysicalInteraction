@@ -18,7 +18,7 @@ def translation(x, y, z):
 #     return total
 
 def compound(rotmatrix, transvector):
-    total =  np.vstack([np.hstack([rotmatrix, transvector]), np.array([0, 0, 0, 1])])
+    total = np.vstack([np.hstack([rotmatrix, transvector]), np.array([0, 0, 0, 1])])
     return total
 
 # Define parameters
@@ -26,7 +26,7 @@ l0 = 2  # cm
 l1 = 1  # cm
 l2 = 9.525   # cm (3.75”)
 l3 = 10.795  # cm (4.25”)
-l3 =  8.5725 # cm (3.375”)
+l3 = 8.5725  # cm (3.375”)
 l4 = 6  # cm
 
 

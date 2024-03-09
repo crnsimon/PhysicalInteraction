@@ -17,9 +17,9 @@ def inverse_kinematics(l1, l2, l3, x, y, z):
     return math.degrees(q1), math.degrees(q2), math.degrees(q3), math.degrees(r0)
 
 
-l1 =  9.525  # cm (3.75”)
+l1 = 9.525  # cm (3.75”)
 l2 = 10.795  # cm (4.25”)
-l3 =  8.5725 # cm (3.375”)
+l3 = 8.5725  # cm (3.375”)
 
 # listy = []
 # listz = []
