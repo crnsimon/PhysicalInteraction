@@ -54,12 +54,12 @@ latest_rot = np.array([[1,0,0],[0,1,0],[0,0,1]])
 namecount = 0
 
 # Plot each axis system at its respective position
-for pos in origin, joint0,joint1,joint2,joint3,EE:
+for pos in origin, joint0, joint1, joint2, joint3, EE:
     old_pos = latest_pos
-    latest_rot = np.dot(latest_rot,rotation(pos[3],pos[4],pos[5]))
-    latest_pos = np.dot(latest_rot,np.array([[pos[0]],[pos[1]],[pos[2]]])) + latest_pos
-    compound_matrix = compound(latest_rot,latest_pos)
-    new_pos = np.dot(compound_matrix,np.vstack([np.array([[0],[0],[0]]),[1]]))[:-1]
+    latest_rot = latest_rot @ rotation(pos[3],pos[4],pos[5])
+    latest_pos = latest_rot @ np.array([[pos[0]],[pos[1]],[pos[2]]]) + latest_pos
+    compound_matrix = compound(latest_rot, latest_pos)
+    new_pos = (compound_matrix @ np.vstack([np.array([[0],[0],[0]]),[1]]))[:-1]
     ax.plot([old_pos[0][0], new_pos[0][0]], [old_pos[1][0], new_pos[1][0]], [old_pos[2][0], new_pos[2][0]], color='black')
     ax.text(new_pos[0][0], new_pos[1][0], new_pos[2][0], names[namecount])
     namecount += 1
