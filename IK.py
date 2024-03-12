@@ -9,8 +9,9 @@ l2 = 0.09525   # m (3.75”)
 l3 = 0.10795   # m (4.25”)
 l4 = 0.085725  # m (3.375”)
 
-x, y, z = (0, 0, 0.03)
+x, y, z = (0.08, 0.08, 0.07)
 
+orientation = np.pi
 
 def equations(qs):
     q0, q1, q2, q3 = qs
@@ -18,6 +19,15 @@ def equations(qs):
     eq2 = np.sin(q0)*(l1x+l2*np.sin(q1) + l3*np.sin(q1+q2) + l4*np.sin(q1+q2+q3)) - y
     eq3 = l0 + l1 + l2*np.cos(q1) + l3*np.cos(q1+q2) + l4*np.cos(q1+q2+q3) - z
     return eq1, eq2, eq3
+
+
+def equations_orientation(qs):
+    q0, q1, q2, q3 = qs
+    eq1 = np.cos(q0)*(l1x+l2*np.sin(q1) + l3*np.sin(q1+q2) + l4*np.sin(q1+q2+q3)) - x
+    eq2 = np.sin(q0)*(l1x+l2*np.sin(q1) + l3*np.sin(q1+q2) + l4*np.sin(q1+q2+q3)) - y
+    eq3 = l0 + l1 + l2*np.cos(q1) + l3*np.cos(q1+q2) + l4*np.cos(q1+q2+q3) - z
+    eq4 = q1 + q2 + q3 - orientation
+    return eq1, eq2, eq3, eq4
 
 
 def FK(qs):
@@ -28,7 +38,7 @@ def FK(qs):
     return xf, yf, zf
 
 
-res = least_squares(equations, (0, 0, 120*np.pi/180, 0), bounds = ((-np.pi/2, -np.pi/3, np.pi/2, -np.pi/2), (np.pi/2, np.pi/3, 160*np.pi/180, np.pi/2)))
+res = least_squares(equations_orientation, (0, 0, 120*np.pi/180, 0), bounds = ((-np.pi/2, -np.pi/3, np.pi/2, -np.pi/2), (np.pi/2, np.pi/3, 160*np.pi/180, np.pi/2)))
 print(res.cost)
 print(FK(res.x))
 print((res.x * 180/np.pi))
