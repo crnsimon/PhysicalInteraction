@@ -122,7 +122,6 @@ reachable_z = []
 r0 = np.radians(0)
 for j in np.linspace(-60, 60, 1000):
     q1 = np.radians(j)
-    print(j)
     for k in np.linspace(90, 160, 100):
         q2 = np.radians(k)
         x = l0x + l1*np.sin(q1) + l2*np.sin(q1 + q2)
