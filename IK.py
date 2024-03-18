@@ -67,16 +67,28 @@ def angles_to_sim(qs):
     q3 = -q3
     return q0, q1, q2, q3
 
-
+def inverse_kinematics(x0, orient=None, printing=False):
+    global x, y, z, orientation
+    x, y, z = x0
+    orientation = orient
+    if orient is not None:
+        res = least_squares(equations_orientation, (0, 0, 90 * np.pi / 180, 0), bounds=(
+            (-np.pi / 2, -np.pi / 3, 70 * np.pi / 180, -np.pi / 2),
+            (np.pi / 2, np.pi / 3, 150 * np.pi / 180, np.pi / 2)))
+    else:
+        res = least_squares(equations, (0, 0, 90 * np.pi / 180, 0), bounds=(
+            (-np.pi / 2, -np.pi / 3, 70 * np.pi / 180, -np.pi / 2),
+            (np.pi / 2, np.pi / 3, 150 * np.pi / 180, np.pi / 2)))
+    qs = angles_to_sim(res.x)
+    x = FK(res.x)
+    if printing:
+        print(FK(res.x), sum([res.x[1], res.x[2], res.x[3]]) * 180 / np.pi)
+        print(', '.join(str(x*180/np.pi) for x in qs))
+    return qs, x
 
 if __name__ == '__main__':
-    x, y, z = (0.15, 0.05, 0.1)
-    orientation = np.pi/2
-    res = least_squares(equations_orientation, (0, 0, 90 * np.pi / 180, 0), bounds=(
-    (-np.pi / 2, -np.pi / 3, 70 * np.pi / 180, -np.pi / 2), (np.pi / 2, np.pi / 3, 150 * np.pi / 180, np.pi / 2)))
-    print(FK(res.x), sum([res.x[1], res.x[2], res.x[3]]) * 180 / np.pi)
-    qs = angles_to_sim(res.x)
-    print(', '.join(str(x) for x in qs))
+    qs = inverse_kinematics((0, 0, 0.3),printing=True)
+
 
 # 1 0.3217505543965733, 0.37462937171086075, 0.8840461193694984, 0.509416747643335
 # 2 0.3217505543770969, 0.5340738075978947, 0.49687699432751753, -0.037196813271319316
