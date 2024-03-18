@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from IK import inverse_kinematics
+from IK import inverse_kinematics, FK
 
 sim = False
 
@@ -40,20 +40,23 @@ def jacobian(qs):
     oq1 = 1
     oq2 = 1
     oq3 = 1
-    J = np.array([[xq0, xq1, xq2, xq3], [yq0, yq1, yq2, yq3], [zq0, zq1, zq2, zq3], [oq0, oq1, oq2, oq3]])
+    J = np.matrix([[xq0, xq1, xq2, xq3], [yq0, yq1, yq2, yq3], [zq0, zq1, zq2, zq3], [oq0, oq1, oq2, oq3]])
     return J
 
-def const_v(v, x0, orientation, T, dt):
+def const_v(v, x, orientation, T, dt):
+    q, x_res = inverse_kinematics(x, orient=orientation[0], printing=False)
     qs = []
     err = []
-    i = 0
+    x = np.array(x)
     for t in np.arange(0, T, dt):
-        x = x0 + np.array(v)*t
-        q, x_res = inverse_kinematics(x, orient=orientation[i], printing=False)
+        print(x_res, x)
+        inv_jac = jacobian(q)**-1
+        qdot = inv_jac @ np.hstack((np.array(v).T, np.zeros(1)))
         qs.append(q)
         err.append(sum((x_res-x)**2)*10000)
-        print(x_res, x)
-        i += 1
+        x = x + np.array(v) * dt
+        q = tuple(map(tuple, np.array(q + qdot * dt)))[0]
+        x_res = np.array(FK(q))
     return qs, err
 
 def plot_results(qs, err, T, dt):
@@ -68,7 +71,7 @@ def plot_results(qs, err, T, dt):
 
 if __name__ == '__main__':
     T = 7
-    dt = 0.01
+    dt = 0.1
     orientation = [np.pi/2 for x in np.arange(0, T, dt)]
     qs, err = const_v((-0.02, 0, 0.02),(0.15, 0.15, 0.08), orientation, T, dt)
     plot_results(qs, err, T, dt)
