@@ -79,12 +79,11 @@ def inverse_kinematics(x0, orient=None, printing=False):
         res = least_squares(equations, (0, 0, 90 * np.pi / 180, 0), bounds=(
             (-np.pi / 2, -np.pi / 3, 70 * np.pi / 180, -np.pi / 2),
             (np.pi / 2, np.pi / 3, 150 * np.pi / 180, np.pi / 2)))
-    qs = angles_to_sim(res.x)
     x = FK(res.x)
     if printing:
         print(FK(res.x), sum([res.x[1], res.x[2], res.x[3]]) * 180 / np.pi)
         print(', '.join(str(x*180/np.pi) for x in qs))
-    return qs, x
+    return res.x, x
 
 if __name__ == '__main__':
     qs = inverse_kinematics((0, 0, 0.3),printing=True)

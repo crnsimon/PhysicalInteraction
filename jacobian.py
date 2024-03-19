@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from IK import inverse_kinematics, FK
+from IK import inverse_kinematics, FK, angles_to_sim
 
 sim = False
 
@@ -25,17 +25,17 @@ else:
 def jacobian(qs):
     q0, q1, q2, q3 = qs
     xq0 = -np.sin(q0)*(l4*np.sin(q1+q2+q3)+l3*np.sin(q1+q2)+l2*np.sin(q1)+l1x)
-    xq1 = np.cos(q0)*(l4*np.cos(q1+q2+q3)+l3*np.cos(q1+q2)+l2*np.sin(q1))
+    xq1 = np.cos(q0)*(l4*np.cos(q1+q2+q3)+l3*np.cos(q1+q2)+l2*np.cos(q1))
     xq2 = np.cos(q0)*(l4*np.cos(q1+q2+q3)+l3*np.cos(q1+q2))
     xq3 = np.cos(q0)*(l4*np.cos(q1+q2+q3))
     yq0 = np.cos(q0)*(l4*np.sin(q1+q2+q3)+l3*np.sin(q1+q2)+l2*np.sin(q1)+l1x)
-    yq1 = np.sin(q0)*(l4*np.cos(q1+q2+q3)+l3*np.cos(q1+q2)+l2*np.sin(q1))
+    yq1 = np.sin(q0)*(l4*np.cos(q1+q2+q3)+l3*np.cos(q1+q2)+l2*np.cos(q1))
     yq2 = np.sin(q0)*(l4*np.cos(q1+q2+q3)+l3*np.cos(q1+q2))
     yq3 = np.sin(q0)*(l4*np.cos(q1+q2+q3))
     zq0 = 0
     zq1 = -(l4*np.sin(q1+q2+q3)+l3*np.sin(q1+q2)+l2*np.sin(q1))
     zq2 = -(l4*np.sin(q1+q2+q3)+l3*np.sin(q1+q2))
-    zq3 = (l4 * np.sin(q1 + q2 + q3))
+    zq3 = -(l4 * np.sin(q1 + q2 + q3))
     oq0 = 0
     oq1 = 1
     oq2 = 1
@@ -49,11 +49,11 @@ def const_v(v, x, orientation, T, dt):
     err = []
     x = np.array(x)
     for t in np.arange(0, T, dt):
-        print(x_res, x)
-        inv_jac = jacobian(q)**-1
-        qdot = inv_jac @ np.hstack((np.array(v).T, np.zeros(1)))
         qs.append(q)
-        err.append(sum((x_res-x)**2)*10000)
+        err.append(sum((x_res - x) ** 2) * 10000)
+        jac = jacobian(q)
+        inv_jac = np.linalg.inv(jac)
+        qdot = inv_jac @ np.hstack((np.array(v).T, np.zeros(1)))
         x = x + np.array(v) * dt
         q = tuple(map(tuple, np.array(q + qdot * dt)))[0]
         x_res = np.array(FK(q))
@@ -70,9 +70,9 @@ def plot_results(qs, err, T, dt):
 
 
 if __name__ == '__main__':
-    T = 7
+    T = 15
     dt = 0.1
     orientation = [np.pi/2 for x in np.arange(0, T, dt)]
-    qs, err = const_v((-0.02, 0, 0.02),(0.15, 0.15, 0.08), orientation, T, dt)
+    qs, err = const_v((-0.02, 0, 0.01),(0.15, 0.15, 0.05), orientation, T, dt)
     plot_results(qs, err, T, dt)
 
