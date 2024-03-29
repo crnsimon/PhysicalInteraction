@@ -90,25 +90,25 @@ z = lground + l0z + l1*np.cos(q1) + l2*np.cos(q1 + q2) + l3*np.cos(q1 + q2 + q3)
 y = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.sin(r0)
 x = (l0x + l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.cos(r0)
 
-# # reachable subspace, no limits
-fig, ax = plt.subplots() # note we must use plt.subplots, not plt.subplot
+# # # reachable subspace, no limits
+# fig, ax = plt.subplots() # note we must use plt.subplots, not plt.subplot
 
-r0 = np.radians(0)
-reachable_x = []
-reachable_y = []
-reachable_z = []
+# r0 = np.radians(0)
+# reachable_x = []
+# reachable_y = []
+# reachable_z = []
 
-ax.add_patch(plt.Circle((l0x, l0z+lground), l1+l2+l3, color='b'))
-ax.add_patch(plt.Circle((-l0x, l0z+lground), l1+l2+l3, color='b'))
+# ax.add_patch(plt.Circle((l0x, l0z+lground), (l1+l2+l3)*100, color='b'))
+# ax.add_patch(plt.Circle((-l0x, l0z+lground), (l1+l2+l3)*100, color='b'))
 
-# plt.scatter(l0x,(l0z+lground), color='r')
+# # plt.scatter(l0x,(l0z+lground), color='r')
 
-plt.axis('equal')
-plt.xlabel('x [cm]')
-plt.ylabel('z [cm]')
-plt.title('Reachable subspace x-z')
-plt.savefig('reachable_xz_nolimits.png', format='png', dpi=1000)
-plt.show()  
+# plt.axis('equal')
+# plt.xlabel('x [cm]')
+# plt.ylabel('z [cm]')
+# plt.title('Reachable subspace x-z')
+# plt.savefig('reachable_xz_nolimits.png', format='png', dpi=1000)
+# plt.show()  
 
 
 # reachable subspace, limits
@@ -117,12 +117,22 @@ reachable_x = []
 reachable_y = []
 reachable_z = []
 
+reachable_x_base = []
+reachable_z_base = []
+
+
 # for i in np.linspace(-90, 90, 100):
 
-r0 = np.radians(0)
-for j in np.linspace(-60, 60, 1000):
+base_radius = 0.0485
+base_height = 0.05
+
+# for i in np.linspace(-90, 90, 100):
+#     r0 = np.radians(i)
+#     print(i)
+r0 = 0
+for j in np.linspace(-60, 60, 100):
     q1 = np.radians(j)
-    for k in np.linspace(90, 160, 100):
+    for k in np.linspace(50, 150, 100):
         q2 = np.radians(k)
         x = l0x + l1*np.sin(q1) + l2*np.sin(q1 + q2)
         y = (l1*np.sin(q1) + l2*np.sin(q1 + q2))*np.sin(r0)
@@ -132,25 +142,29 @@ for j in np.linspace(-60, 60, 1000):
             z = lground + l0z + l1*np.cos(q1) + l2*np.cos(q1 + q2) + l3*np.cos(q1 + q2 + q3)
             y = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.sin(r0)
             x = (l1*np.sin(q1) + l2*np.sin(q1 + q2) + l3*np.sin(q1 + q2 + q3))*np.cos(r0)
-            reachable_x.append(x)
-            reachable_y.append(y)
-            reachable_z.append(z)
+            reachable_x.append(x*100)
+            reachable_y.append(y*100)
+            reachable_z.append(z*100)
+            if z > 0 and not(x < base_radius and z < base_height) and not (x<0 and z<0.1):
+                reachable_x_base.append(x*100)
+                reachable_z_base.append(z*100)
+
 
 # plt.figure()
 # plt.plot(reachable_x, reachable_y, 'b.')
 # plt.axis('equal')
-# plt.xlabel('x')
-# plt.ylabel('y')
+# plt.xlabel('x [cm]')
+# plt.ylabel('y [cm]')
 # plt.title('Reachable subspace x-y')
 # plt.savefig('reachable_xy.png', format='png', dpi=1000)
 # plt.show()
 plt.figure()
 plt.plot(reachable_x, reachable_z, 'b.')
 plt.axis('equal')
-plt.xlabel('x [cm]')
+plt.xlabel('r [cm]')
 plt.ylabel('z [cm]')
 plt.title('Reachable subspace x-z')
-plt.savefig('reachable_xz.png', format='png', dpi=1000)
+plt.savefig('reachable_xz.png', format='png',dpi=1000)
 plt.show()
 # plt.figure()
 # plt.plot(reachable_y, reachable_z, 'b.')
@@ -161,6 +175,15 @@ plt.show()
 # plt.savefig('reachable_yz.png', format='png', dpi=1000)
 # plt.show()
 
+
+plt.figure()
+plt.plot(reachable_x_base, reachable_z_base, 'b.')
+plt.axis('equal')
+plt.xlabel('r [cm]')
+plt.ylabel('z [cm]')
+plt.title('Reachable subspace x-z')
+plt.savefig('reachable_xz_base.png', format='png',dpi=1000)
+plt.show()
 
 
 
