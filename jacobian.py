@@ -72,7 +72,7 @@ def plot_results(qs, err, T, dt):
 if __name__ == '__main__':
     T = 15
     dt = 0.1
-    orientation = [np.pi/2 for x in np.arange(0, T, dt)]
-    qs, err = const_v((-0.02, 0, 0.01),(0.15, 0.15, 0.05), orientation, T, dt)
+    orientation = [None for x in np.arange(0, T, dt)]
+    qs, err = const_v((-0.01, 0, 0.01),(0.15, 0, 0.15), orientation, T, dt)
     plot_results(qs, err, T, dt)
 
